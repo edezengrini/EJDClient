@@ -80,7 +80,7 @@ public class FramePrincipal extends JDialog {
 	public FramePrincipal() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(FramePrincipal.class.getResource(EnumImage.ICONE.getCaminho())));
 
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle("Sistema EJD");
 
 		setMinimumSize(new Dimension(800,600));
@@ -207,7 +207,6 @@ public class FramePrincipal extends JDialog {
 				Persistence.closeAll();
 			}
 		});
-
 
 	}
 
