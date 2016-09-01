@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/EJDCommon"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/EJDServer"/>
+	<classpathentry kind="lib" path="/EJDServer/lib/javaee-api-7.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/EJDArquiteturaClient"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/EJDArquiteturaCommon"/>
+	<classpathentry kind="lib" path="/EJDArquiteturaClient/src/lib/miglayout15-swing.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
