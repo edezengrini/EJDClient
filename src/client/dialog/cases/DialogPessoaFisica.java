@@ -6,9 +6,11 @@ import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.AfterCompletion;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -16,12 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.MaskFormatter;
 
-import server.dao.AbstractDAO;
-import server.dao.PessoaFisicaDAO;
-import server.ejb.PessoaFisicaEJB;
-import server.entities.PessoaFisica;
-import server.entities.abstracts.EntityState;
 import arquitetura.client.binding.annotation.TextBindingAnnot;
 import arquitetura.client.components.panel.EJDCheckBox;
 import arquitetura.client.components.panel.EJDPanelCodigoDescricao;
@@ -31,6 +29,7 @@ import arquitetura.client.components.textfield.EJDTextField;
 import arquitetura.client.components.textfield.EnumFiltroTextField;
 import arquitetura.client.components.textfield.EnumMascarasDatas;
 import arquitetura.common.beans.attribute.Attribute.UPDATABLE_TYPE;
+import arquitetura.common.exception.EJDException;
 import arquitetura.common.exception.EJDLogicException;
 import arquitetura.common.util.DateUtil;
 import arquitetura.common.util.ValidateEntity;
@@ -38,6 +37,14 @@ import client.dialog.DialogCrud;
 import client.enums.EnumImage;
 import client.layout.VerticalFlowLayout;
 import client.table.TableModelEntidade.ITableModelEntidade;
+import common.base.FlagBase;
+import server.dao.AbstractDAO;
+import server.dao.PessoaDAO;
+import server.dao.PessoaFisicaDAO;
+import server.entities.Flag;
+import server.entities.Pessoa;
+import server.entities.PessoaFisica;
+import server.entities.abstracts.EntityState;
 
 public class DialogPessoaFisica extends DialogCrud<PessoaFisica>{
 
@@ -62,28 +69,34 @@ public class DialogPessoaFisica extends DialogCrud<PessoaFisica>{
     private EJDDateTimeField fieldRgEmissao;
     @TextBindingAnnot(
             obrigatorio = true,
-            alteravel = UPDATABLE_TYPE.WHILE_NEW,
+            alteravel = UPDATABLE_TYPE.ALWAYS,
             tamanho = 14)
     private EJDTextField fieldGenero;
     @TextBindingAnnot(
             obrigatorio = true,
-            alteravel = UPDATABLE_TYPE.WHILE_NEW,
+            alteravel = UPDATABLE_TYPE.ALWAYS,
             tamanho = 14)
     private EJDTextField fieldCpf;
     @TextBindingAnnot(
             obrigatorio = true,
-            alteravel = UPDATABLE_TYPE.WHILE_NEW,
+            alteravel = UPDATABLE_TYPE.ALWAYS,
             tamanho = 14)
     private EJDTextField fieldRg;
     @TextBindingAnnot(
             obrigatorio = true,
-            alteravel = UPDATABLE_TYPE.WHILE_NEW,
+            alteravel = UPDATABLE_TYPE.ALWAYS,
             tamanho = 5)
     private EJDTextField fieldRgOrgaoEmissor;
+    @TextBindingAnnot(
+            obrigatorio = true,
+            alteravel = UPDATABLE_TYPE.ALWAYS,
+            tamanho = 15)
+    private EJDTextField fieldFone;
     private JButton btnEndereco;
     private EJDCheckBox chkStatus;
-
-    private PessoaFisicaEJB pessoaFisicaEJB = new PessoaFisicaEJB();
+    private JPanel panelFone;
+    private PessoaDAO pessoaDAO = new PessoaDAO();
+    private PessoaFisicaDAO pessoaFisicaDAO = new PessoaFisicaDAO();
 
     public DialogPessoaFisica(Window window) {
         super(window);
@@ -116,6 +129,17 @@ public class DialogPessoaFisica extends DialogCrud<PessoaFisica>{
 
         fieldGenero = new EJDTextField(EnumFiltroTextField.MAIUSCULAS);
         panelGenero.add(fieldGenero);
+        
+        panelFone = new JPanel();
+        panelFone.setBorder(new TitledBorder(null, "Telefone", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        panelEstoque.add(panelFone);
+        panelFone.setLayout(new BorderLayout(0, 0));
+        
+        fieldFone = new EJDTextField();
+        
+        fieldFone.setMascara(inserirMascara());
+        panelFone.add(fieldFone);
+        fieldFone.setColumns(10);
 
         panelCpf = new JPanel();
         panelCpf.setBorder(new TitledBorder(null, "CPF", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -190,7 +214,21 @@ public class DialogPessoaFisica extends DialogCrud<PessoaFisica>{
         panelEndereco.add(btnEndereco, BorderLayout.EAST);
 
     }
-
+    
+    private String inserirMascara() {
+        String retorno = "";
+        MaskFormatter mascara;
+        try {
+            
+            mascara = new MaskFormatter("(##)#####-####");
+            mascara.setPlaceholderCharacter('_');
+            retorno = mascara.getMask();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } 
+        return retorno;
+    }
+            
     protected void consultarEndereco() {
 //        try {
 //            setCursor(UtilClient.CURSOR_WAIT);
@@ -215,13 +253,10 @@ public class DialogPessoaFisica extends DialogCrud<PessoaFisica>{
     public AbstractDAO<PessoaFisica> getDAO() {
         return new PessoaFisicaDAO();
     }
-
+    
     @Override
     public void preecherEntidade(PessoaFisica entidade) throws EJDLogicException {
-//        entidade.setCodigo(produtoEJB.findMaiorIdentificador() != null ? produtoEJB.findMaiorIdentificador().getIdProduto() + 1 : 1);
         entidade.setNome(fieldNome.getText());
-//        entidade.setFlagStatus(chkStatus.isSelected() ? new Flag(FlagBase.PRODUTO_IDFLAGSTATUS_ATIVO) : new Flag(FlagBase.PRODUTO_IDFLAGSTATUS_BAIXADO));
-//        entidade.setEstoque(new BigDecimal(0));
         entidade.setCpf(fieldCpf.getText());
         entidade.setRg(fieldRg.getText());
         entidade.setRgOrgaoEmissor(fieldRgOrgaoEmissor.getText());
@@ -230,18 +265,62 @@ public class DialogPessoaFisica extends DialogCrud<PessoaFisica>{
         DateUtil dataUtil = new DateUtil();
         entidade.setRgEmissao(fieldRgEmissao.getText().isEmpty() || fieldRgEmissao.getText().equals("  /  /    ") ? new Date() : dataUtil.parseDateDDMMYYYY(fieldRgEmissao.getText()) );
         entidade.setNascimento(fieldNascimento.getText().isEmpty() || fieldNascimento.getText().equals("  /  /    ") ? new Date() : dataUtil.parseDateDDMMYYYY(fieldNascimento.getText()));
-
-//        entidade.setGrupo(grupo);
-//        entidade.setUnidadeMedida(unidadeMedida);
         validarCamposObrigatorios(entidade);
-//        produtoEJB.validarEstoque(entidade);
-//        produtoEJB.validarValor(entidade);
+        
+//        entidade = gerarPessoa(entidade);
+    }
+
+    private PessoaFisica gerarPessoa(PessoaFisica entidade) {
+        
+        Pessoa pessoaFisica = pessoaDAO.findByPessoaFisica(entidade.getIdPessoaFisica());
+        
+        try {
+            if (pessoaFisica != null) {
+                alterarPessoa(entidade, pessoaFisica);
+            } else {
+//                pessoaFisicaDAO.flush();
+                entidade = pessoaFisicaDAO.editar(entidade);
+                inserirPessoa(entidade, pessoaFisica);
+                entidade = null;
+            }
+        } catch (EJDException e) {
+            e.printStackTrace();
+        }
+        
+        return entidade;
+    }
+
+    private void inserirPessoa(PessoaFisica entidade, Pessoa pessoa) throws EJDException {
+        
+        pessoa = new Pessoa();
+        pessoa.setPessoaFisica(entidade);
+        pessoa.setFone(fieldFone.getText());
+        pessoa.setFlagStatus(chkStatus.isSelected() ? new Flag(FlagBase.PESSOA_IDFLAGSTATUS_ATIVO) : new Flag(FlagBase.PESSOA_IDFLAGSTATUS_INATIVO));
+
+        
+        try {
+            pessoaDAO.inserir(pessoa);
+        } catch (EJDException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void alterarPessoa(PessoaFisica entidade, Pessoa pessoa) throws EJDException {
+        pessoa.setPessoaFisica(entidade);
+        pessoa.setFone(fieldFone.getText());
+        pessoa.setFlagStatus(chkStatus.isSelected() ? new Flag(FlagBase.PESSOA_IDFLAGSTATUS_ATIVO) : new Flag(FlagBase.PESSOA_IDFLAGSTATUS_INATIVO));
+        
+        try {
+            pessoaDAO.editar(pessoa);
+        } catch (EJDException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void preecherCampos(PessoaFisica entidade) {
         if (entidade != null){
-//            fieldCodigo.setText(entidade.getCodigo() != null ? entidade.getCodigo().toString() : null);
+            gerarPessoa(entidade);
             fieldNome.setText(entidade.getNome());
             fieldRgOrgaoEmissor.setText(entidade.getRgOrgaoEmissor());
 //            fieldRgEmissao.setText(entidade.getRgEmissao());
@@ -279,17 +358,18 @@ public class DialogPessoaFisica extends DialogCrud<PessoaFisica>{
         }
 
         fieldCodigo.setEnabled(false);
-        fieldNome.setEnabled(habilita && ativo);
-        fieldRgOrgaoEmissor.setEnabled(habilita && ativo);
-        fieldRgEmissao.setEnabled(habilita && ativo);
+        fieldNome.setEnabled(habilita);
+        fieldRgOrgaoEmissor.setEnabled(habilita);
+        fieldRgEmissao.setEnabled(habilita);
         chkStatus.setEnabled(habilita);
         fieldCodigoEndereco.setEnabled(false);
         fieldDescricaoEndereco.setEnabled(false);
         btnEndereco.setEnabled(habilita && ativo);
-        fieldGenero.setEnabled(habilita && ativo);
-        fieldCpf.setEnabled(habilita && ativo);
-        fieldRg.setEnabled(habilita && ativo);
-        fieldNascimento.setEnabled(habilita && ativo);
+        fieldGenero.setEnabled(habilita);
+        fieldCpf.setEnabled(habilita);
+        fieldRg.setEnabled(habilita);
+        fieldNascimento.setEnabled(habilita);
+        fieldFone.setEnabled(habilita);
 
     }
 

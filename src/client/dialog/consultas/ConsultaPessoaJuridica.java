@@ -2,13 +2,13 @@ package client.dialog.consultas;
 
 import javax.inject.Inject;
 
-import server.dao.PessoaJuridicaDAO;
-import server.ejb.PessoaJuridicaEJB;
-import server.entities.PessoaJuridica;
 import arquitetura.common.exception.EJDLogicException;
 import arquitetura.common.exception.EnumEJDException;
 import client.dialog.DialogCrud;
 import client.dialog.DialogLocalizar;
+import server.dao.PessoaJuridicaDAO;
+import server.ejb.PessoaJuridicaEJB;
+import server.entities.PessoaJuridica;
 
 public class ConsultaPessoaJuridica {
 
@@ -26,7 +26,7 @@ public class ConsultaPessoaJuridica {
         PessoaJuridica entidadeSelecionada = formLocalizar.getEntidadeSelecionada();
 
         if (entidadeSelecionada != null) {
-            pessoaJuridica = pessoaJuridicaEJB.find(entidadeSelecionada.getIdPessoa());
+            pessoaJuridica = pessoaJuridicaEJB.find(entidadeSelecionada.getIdPessoaJuridica());
         }
 
         if (pessoaJuridica == null) {

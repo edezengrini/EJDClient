@@ -1,7 +1,6 @@
 package client.dialog.cases;
 
 import java.awt.BorderLayout;
-import java.awt.Dialog.ModalExclusionType;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -15,19 +14,17 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 
-import server.configurador.Configurador;
-import server.dao.ProdutoDAO;
-import server.persistence.Persistence;
 import arquitetura.client.components.dialog.EJDOptionPane;
 import arquitetura.client.runner.EJDThread;
 import arquitetura.client.runner.EJDThread.DoInBackground;
 import client.dialog.util.ReportException;
 import client.dialog.util.UtilClient;
 import client.enums.EnumImage;
+import server.configurador.Configurador;
+import server.dao.ProdutoDAO;
+import server.persistence.Persistence;
 
 public class FramePrincipal extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -82,14 +79,13 @@ public class FramePrincipal extends JFrame {
 	public FramePrincipal() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(FramePrincipal.class.getResource(EnumImage.ICONE.getCaminho())));
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle("Sistema EJD");
 
 		setMinimumSize(new Dimension(800,600));
 		setLocationRelativeTo(null);
-//		setExtendedState(Frame.MAXIMIZED_BOTH);
 
-		setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
+//		setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 
 		setJMenuBar(this.menuBar);
 		this.menuCadastros.setMnemonic('C');
@@ -98,9 +94,7 @@ public class FramePrincipal extends JFrame {
 		this.menuItemProduto.setMnemonic('P');
 		this.menuItemProduto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				frame.setEnabled(false);
 				new DialogProdutoProducao(FramePrincipal.this).setVisible(true);
-//				frame.setEnabled(true);
 			}
 		});
 
@@ -128,9 +122,7 @@ public class FramePrincipal extends JFrame {
 		this.menuBar.add(this.menuMovimentos);
 		this.menuItemCompra.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				frame.setEnabled(false);
 				new DialogEntrada(FramePrincipal.this).setVisible(true);
-//				frame.setEnabled(true);
 			}
 		});
 		this.menuItemCompra.setMnemonic('C');
@@ -138,9 +130,7 @@ public class FramePrincipal extends JFrame {
 		this.menuMovimentos.add(this.menuItemCompra);
 		this.menuItemVenda.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				frame.setEnabled(false);
 				new DialogSaida(FramePrincipal.this).setVisible(true);
-//				frame.setEnabled(true);
 			}
 		});
 		this.menuItemVenda.setMnemonic('V');
@@ -148,9 +138,7 @@ public class FramePrincipal extends JFrame {
 		this.menuMovimentos.add(this.menuItemVenda);
 		this.menuItemEstoque.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				frame.setEnabled(false);
 				new DialogEstoque(FramePrincipal.this).setVisible(true);
-//				frame.setEnabled(true);
 			}
 		});
 		this.menuItemEstoque.setMnemonic('E');
@@ -166,9 +154,7 @@ public class FramePrincipal extends JFrame {
 		});
 		this.menuItemLog.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				frame.setEnabled(false);
 				new DialogLogSql(FramePrincipal.this).setVisible(true);
-//				frame.setEnabled(true);
 			}
 		});
 		this.menuItemLog.setMnemonic('L');
@@ -212,7 +198,6 @@ public class FramePrincipal extends JFrame {
 				Persistence.closeAll();
 			}
 		});
-
 
 	}
 

@@ -66,11 +66,11 @@ public abstract class DialogCrud<E extends AbstractEntity> extends DialogPadrao 
 	}
 
 	public abstract AbstractDAO<E> getDAO();
-
+	
 	public abstract void preecherEntidade(E entidade) throws EJDLogicException;
 
 	public abstract void preecherCampos(E entidade);
-
+	
 	public abstract void habilitarCampos(EntityState state);
 
 	public abstract ITableModelEntidade<E> getTableModelEntidade();
@@ -176,7 +176,6 @@ public abstract class DialogCrud<E extends AbstractEntity> extends DialogPadrao 
 		}
 		return false;
 	}
-
 
 	protected void localizar() {
 		if (isEdicao()) {
@@ -314,7 +313,7 @@ public abstract class DialogCrud<E extends AbstractEntity> extends DialogPadrao 
 	}
 
 	// save
-	private void salvar() {
+	private E salvar() {
 		try {
 			setCursor(UtilClient.CURSOR_WAIT);
 			preecherEntidade(entidadeCorrente);
@@ -347,9 +346,10 @@ public abstract class DialogCrud<E extends AbstractEntity> extends DialogPadrao 
 			reportException(e);
 		} finally {
 			setCursor(UtilClient.CURSOR_DEFAULT);
-		}
+		} 
+		return entidadeCorrente;
 	}
-
+	
 	// cancel
 	private void cancelar() {
 		try {
@@ -445,6 +445,7 @@ public abstract class DialogCrud<E extends AbstractEntity> extends DialogPadrao 
 		preecherCampos(entidadeCorrente);
 		habilitarCampos(entityState);
 
+		
 	}
 
 }

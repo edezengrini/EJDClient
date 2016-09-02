@@ -159,18 +159,18 @@ public class DialogSaida extends DialogCrud<Saida> {
 		    produto = entidade.getProduto();
 
 		}
-
-        if (entidade != null && entidade.getPessoa() != null && entidade.getPessoa().isFisica()) {
-            fieldPessoa.setText(UtilCommon.toStringNotNull(entidade.getPessoa().getPessoaFisica().getNome()));
-            pessoaFisica = new PessoaFisica();
-            pessoaFisica = entidade.getPessoa().getPessoaFisica();
-        }
-
-        if (entidade != null && entidade.getPessoa() != null && entidade.getPessoa().isJuridica()) {
-            fieldPessoa.setText(UtilCommon.toStringNotNull(entidade.getPessoa().getPessoaJuridica().getRazaoSocial()));
-            pessoaJuridica = new PessoaJuridica();
-            pessoaJuridica = entidade.getPessoa().getPessoaJuridica();
-        }
+//
+//        if (entidade != null && entidade.getPessoa() != null && entidade.getPessoa().isFisica()) {
+//            fieldPessoa.setText(UtilCommon.toStringNotNull(entidade.getPessoa().getPessoaFisica().getNome()));
+//            pessoaFisica = new PessoaFisica();
+//            pessoaFisica = entidade.getPessoa().getPessoaFisica();
+//        }
+//
+//        if (entidade != null && entidade.getPessoa() != null && entidade.getPessoa().isJuridica()) {
+//            fieldPessoa.setText(UtilCommon.toStringNotNull(entidade.getPessoa().getPessoaJuridica().getRazaoSocial()));
+//            pessoaJuridica = new PessoaJuridica();
+//            pessoaJuridica = entidade.getPessoa().getPessoaJuridica();
+//        }
 
 	}
 

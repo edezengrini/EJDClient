@@ -16,7 +16,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import server.dao.AbstractDAO;
 import server.entities.abstracts.AbstractEntity;
 import client.table.TableModelEntidade;
 
