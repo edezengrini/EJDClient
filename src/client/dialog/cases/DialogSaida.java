@@ -32,18 +32,19 @@ import arquitetura.common.exception.EJDLogicException;
 import arquitetura.common.util.DateUtil;
 import arquitetura.common.util.ValidateEntity;
 import client.dialog.DialogCrud;
+import client.dialog.consultas.ConsultaPessoaFisica;
 import client.dialog.consultas.ConsultaProduto;
 import client.dialog.util.UtilClient;
 import client.enums.EnumImage;
 import client.table.TableModelEntidade.ITableModelEntidade;
-
 import common.util.UtilCommon;
 
 public class DialogSaida extends DialogCrud<Saida> {
 	private static final long serialVersionUID = 1L;
 
 	private Produto produto = new Produto();
-	private Pessoa pessoa;
+	private PessoaFisica pessoaFisica;
+	private PessoaJuridica pessoaJuridica;
 
 	private final JLabel labelIdentificador = new JLabel("Identificador:");
 	private final JLabel labelQuantidade = new JLabel("Quantidade:");
@@ -161,14 +162,14 @@ public class DialogSaida extends DialogCrud<Saida> {
 
         if (entidade != null && entidade.getPessoa() != null && entidade.getPessoa().isFisica()) {
             fieldPessoa.setText(UtilCommon.toStringNotNull(entidade.getPessoa().getPessoaFisica().getNome()));
-            pessoa = new PessoaFisica();
-            pessoa = entidade.getPessoa().getPessoaFisica();
+            pessoaFisica = new PessoaFisica();
+            pessoaFisica = entidade.getPessoa().getPessoaFisica();
         }
 
         if (entidade != null && entidade.getPessoa() != null && entidade.getPessoa().isJuridica()) {
             fieldPessoa.setText(UtilCommon.toStringNotNull(entidade.getPessoa().getPessoaJuridica().getRazaoSocial()));
-            pessoa = new PessoaJuridica();
-            pessoa = entidade.getPessoa().getPessoaJuridica();
+            pessoaJuridica = new PessoaJuridica();
+            pessoaJuridica = entidade.getPessoa().getPessoaJuridica();
         }
 
 	}
@@ -264,25 +265,25 @@ public class DialogSaida extends DialogCrud<Saida> {
 	}
 
     protected void consultarPessoa()  {
-//
-//        try {
-//            setCursor(UtilClient.CURSOR_WAIT);
-//
-//            DialogCrud<Produto> dialogProduto = new DialogProduto(getOwner());
-//
-//            ConsultaProduto consultaProduto = new ConsultaProduto();
-//
-//            produto = consultaProduto.consultarProduto(dialogProduto);
-//
-//            if (produto != null) {
-//                fieldProduto.setText(produto.getDescricao());
-//            }
-//
-//        } catch (Exception e) {
-//            reportException(e);
-//        } finally {
-//            setCursor(UtilClient.CURSOR_DEFAULT);
-//        }
+
+        try {
+            setCursor(UtilClient.CURSOR_WAIT);
+
+            DialogCrud<PessoaFisica> dialogPessoaFisica = new DialogPessoaFisica(getOwner());
+
+            ConsultaPessoaFisica consultaPessoaFisica = new ConsultaPessoaFisica();
+
+            pessoaFisica = consultaPessoaFisica.consultarPessoaFisica(dialogPessoaFisica);
+
+            if (pessoaFisica != null) {
+                fieldPessoa.setText(pessoaFisica.getNome());
+            }
+
+        } catch (Exception e) {
+            reportException(e);
+        } finally {
+            setCursor(UtilClient.CURSOR_DEFAULT);
+        }
     }
 
 	@Override

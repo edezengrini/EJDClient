@@ -26,7 +26,7 @@ public class ConsultaPessoaFisica {
         PessoaFisica entidadeSelecionada = formLocalizar.getEntidadeSelecionada();
 
         if (entidadeSelecionada != null) {
-            pessoaFisica = pessoaFisicaEJB.find(entidadeSelecionada.getIdPessoa());
+            pessoaFisica = pessoaFisicaEJB.find(entidadeSelecionada.getIdPessoaFisica());
         }
 
         if (pessoaFisica == null) {

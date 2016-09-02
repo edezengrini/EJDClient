@@ -1,21 +1,22 @@
 package client.dialog.cases;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog.ModalExclusionType;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 
 import server.configurador.Configurador;
@@ -28,7 +29,7 @@ import client.dialog.util.ReportException;
 import client.dialog.util.UtilClient;
 import client.enums.EnumImage;
 
-public class FramePrincipal extends JDialog {
+public class FramePrincipal extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private JPanel contentPane;
@@ -37,6 +38,7 @@ public class FramePrincipal extends JDialog {
 	private final JMenu menuCadastros = new JMenu("Cadastros");
 	private final JMenuItem menuItemProduto = new JMenuItem("Produto");
 	private final JMenuItem menuItemGrupo = new JMenuItem("Grupo");
+    private final JMenuItem menuItemPessoaFisica = new JMenuItem("Pessoa Física");
 
 	private final JMenu menuMovimentos = new JMenu("Movimentos");
 	private final JMenuItem menuItemCompra = new JMenuItem("Entrada");
@@ -80,7 +82,7 @@ public class FramePrincipal extends JDialog {
 	public FramePrincipal() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(FramePrincipal.class.getResource(EnumImage.ICONE.getCaminho())));
 
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Sistema EJD");
 
 		setMinimumSize(new Dimension(800,600));
@@ -96,36 +98,39 @@ public class FramePrincipal extends JDialog {
 		this.menuItemProduto.setMnemonic('P');
 		this.menuItemProduto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//			    new DialogProdutoProducao(FramePrincipal.this).setVisible(true);
-//			    setModal(true);
-//			    frmCadastros frmc = new frmCadastros();
-			    DialogProdutoProducao dia = new DialogProdutoProducao(FramePrincipal.this);
-			    dia.setModal(false);
-//			    dia.setUndecorated(true);
-			    dia.setVisible(true);
+//				frame.setEnabled(false);
+				new DialogProdutoProducao(FramePrincipal.this).setVisible(true);
+//				frame.setEnabled(true);
 			}
 		});
 
         this.menuItemGrupo.setMnemonic('G');
         this.menuItemGrupo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                setModal(true);
                 new DialogGrupo(FramePrincipal.this).setVisible(true);
+            }
+        });
+
+        this.menuItemPessoaFisica.setMnemonic('F');
+        this.menuItemPessoaFisica.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new DialogPessoaFisica(FramePrincipal.this).setVisible(true);
             }
         });
 
 		this.menuCadastros.add(this.menuItemProduto);
 		this.menuCadastros.addSeparator();
 		this.menuCadastros.add(this.menuItemGrupo);
+		this.menuCadastros.add(this.menuItemPessoaFisica);
+
 		this.menuMovimentos.setMnemonic('M');
 
 		this.menuBar.add(this.menuMovimentos);
 		this.menuItemCompra.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frame.setEnabled(false);
+//				frame.setEnabled(false);
 				new DialogEntrada(FramePrincipal.this).setVisible(true);
-				frame.setEnabled(true);
-				frame.setVisible(true);
+//				frame.setEnabled(true);
 			}
 		});
 		this.menuItemCompra.setMnemonic('C');
@@ -207,6 +212,7 @@ public class FramePrincipal extends JDialog {
 				Persistence.closeAll();
 			}
 		});
+
 
 	}
 
